@@ -88,9 +88,12 @@ class _TemplatePageState extends State<TemplatePage> {
 										),
 									),
 			        	),
-								Column(
-									children: widget.data.experiences.map((e) => Text(e.title)).toList(),
-								),
+								// Column(
+								// 	children: widget.data.experiences.map((e) => Text(e.title)).toList(),
+								// ),
+								// Column(
+								// 	children: widget.data.educations.map((e) => Text(e.school)).toList(),
+								// ),
 			        ],
 			      ),
 			    ],

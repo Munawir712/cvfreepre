@@ -18,27 +18,44 @@ class PdfApi{
 		// final imgFile = MemoryImage(data.imageFile.readAsBytesSync());
 
 		final pageTheme = PageTheme(
-			pageFormat: PdfPageFormat.a4.applyMargin(
-				left: 2.0 * PdfPageFormat.cm, 
-				top: 2.0 * PdfPageFormat.cm, 
-				right: 2.0 * PdfPageFormat.cm, 
-				bottom: 2.0 * PdfPageFormat.cm),
+			pageFormat: PdfPageFormat(
+				PageTheme().pageFormat.width,
+				PageTheme().pageFormat.height,
+				marginAll: 0 * PdfPageFormat.mm,
+			),
+			buildBackground: (Context context) {
+				return FullPage(
+					ignoreMargins: true,
+					child: Row(
+						mainAxisAlignment: MainAxisAlignment.spaceBetween,
+						children: [
+							Container(
+									width: PageTheme().pageFormat.width / 3.9 -2,
+									height: PageTheme().pageFormat.height,
+							),
+							Container(
+									width: PageTheme().pageFormat.width / 1,
+									height: PageTheme().pageFormat.height,
+									color: PdfColors.grey100,
+							),
+						],
+					)
+				);
+			}
 		);
 
 		
 
 		pdf.addPage(MultiPage(
-			// pageTheme: pageTheme,
-			pageFormat: format,
+			pageTheme: pageTheme,
+			// pageFormat: format,
 			build: (context) => [
 				Partitions(
 					children: [
+						// Side Information
 						Partition(
 							width: 150.0,
 							child: Container(
-								// color: PdfColors.grey900,
-								// height: format != format.landscape ? pageTheme.pageFormat.availableHeight - 1 : null,
-								// padding: EdgeInsets.only(bottom: 10),
 								child: Column(
 									crossAxisAlignment: CrossAxisAlignment.start,
 									children: [
@@ -48,7 +65,6 @@ class PdfApi{
 											height: 150,
 											child: Image( MemoryImage(isNotNull && data.imageFile != null ? data.imageFile.readAsBytesSync() : img) , fit: BoxFit.cover),
 										),
-										// imageFile != null ? imgFile :
 										Container(
 											width: pageTheme.pageFormat.availableWidth,
 											padding: EdgeInsets.only(top: 20, left: 12, right: 12, bottom: 10),
@@ -135,7 +151,6 @@ class PdfApi{
 						Partition(
 							child: Container(
 								color: PdfColors.grey100,
-								height: format == format.landscape ?  null : pageTheme.pageFormat.availableHeight - 1,
 								child: Column(
 								crossAxisAlignment: CrossAxisAlignment.start,
 								children: [
@@ -170,71 +185,40 @@ class PdfApi{
 									),
 									SizedBox(height: 30),
 									// Experience Person
-									Container(
-										padding: EdgeInsets.only(left: 16, right: 16),
-										width: pageTheme.pageFormat.availableWidth,
-										child: Column(
-											crossAxisAlignment: CrossAxisAlignment.start,
-											children: [
-												Text(
-													"EXPERIENCE",
-													style: Theme.of(context).header2.copyWith(color: PdfColors.grey800, fontWeight: FontWeight.bold)
-												),
-												SizedBox(height: 10),
-												Text(
-													"PROGRAMMER PT SIBUYA(2015 - NOW)",
-													style: Theme.of(context).header5.copyWith(color: PdfColors.grey500, fontWeight: FontWeight.bold)
-												),
-												SizedBox(height: 5),
-												Lorem(length: 30, style: TextStyle(color: PdfColors.grey400)),
-												SizedBox(height: 10),
-												Text(
-													"FREELANCER (2010 - 2014)",
-													style: Theme.of(context).header5.copyWith(color: PdfColors.grey500, fontWeight: FontWeight.bold)
-												),
-												SizedBox(height: 5),
-												Lorem(length: 30, style: TextStyle(color: PdfColors.grey400)),
-												SizedBox(height: 10),
-												Text(
-													"SALESPERSON (2005 - 2008)",
-													style: Theme.of(context).header5.copyWith(color: PdfColors.grey500, fontWeight: FontWeight.bold)
-												),
-												SizedBox(height: 5),
-												Lorem(length: 30, style: TextStyle(color: PdfColors.grey400)),
-												SizedBox(height: 10),
-											]
+									if(data.experiences.isNotEmpty)
+										Container(
+											padding: EdgeInsets.only(left: 16, right: 16),
+											width: pageTheme.pageFormat.availableWidth,
+											child: Column(
+												crossAxisAlignment: CrossAxisAlignment.start,
+												children: [
+													Text(
+														"EXPERIENCE",
+														style: Theme.of(context).header2.copyWith(color: PdfColors.grey800, fontWeight: FontWeight.bold)
+													),
+													SizedBox(height: 10),
+													buildListExperiece(data),
+												]
+											),
 										),
-									),
 									// Education Person
-									Container(
-										padding: EdgeInsets.only(left: 16, right: 16),
-										width: pageTheme.pageFormat.availableWidth,
-										child: Column(
-											crossAxisAlignment: CrossAxisAlignment.start,
-											children: [
-												Text(
-													"EDUCATION",
-													style: Theme.of(context).header2.copyWith(color: PdfColors.grey800, fontWeight: FontWeight.bold)
-												),
-												SizedBox(height: 10),
-												Text(
-													"HIGH SCHOOL SIBUYA(1996 - 1999)",
-													style: Theme.of(context).header5.copyWith(color: PdfColors.grey500, fontWeight: FontWeight.bold)
-												),
-												SizedBox(height: 5),
-												Lorem(length: 20, style: TextStyle(color: PdfColors.grey400)),
-												SizedBox(height: 10),
-												Text(
-													"SCHOOL 2 (2004 - 2006)",
-													style: Theme.of(context).header5.copyWith(color: PdfColors.grey500, fontWeight: FontWeight.bold)
-												),
-												SizedBox(height: 5),
-												Lorem(length: 10, style: TextStyle(color: PdfColors.grey400)),
-												SizedBox(height: 10),
-												
-											]
+									if(data.educations.isNotEmpty)
+										Container(
+											padding: EdgeInsets.only(left: 16, right: 16),
+											width: pageTheme.pageFormat.availableWidth,
+											child: Column(
+												crossAxisAlignment: CrossAxisAlignment.start,
+												children: [
+													Text(
+														"EDUCATION",
+														style: Theme.of(context).header2.copyWith(color: PdfColors.grey800, fontWeight: FontWeight.bold)
+													),
+													SizedBox(height: 10),
+													buildListEducation(data),
+													
+												]
+											),
 										),
-									),
 								]
 							),
 							),
@@ -248,32 +232,56 @@ class PdfApi{
 		// return saveDocument(name: "my_example.pdf", pdf: pdf);
 	}
 
+	static Widget buildListExperiece(CvPerson data) {
+		return Column(
+			crossAxisAlignment: CrossAxisAlignment.start,
+			children: data.experiences.map((e) => Column(
+				crossAxisAlignment: CrossAxisAlignment.start,
+				children: [
+					Text(
+						e.title.toUpperCase() + " (${e.dateStart[0]} ${e.dateStart[1]} - ${e.dateEnd[0]} ${e.dateEnd[1]})",
+						style: TextStyle(color: PdfColors.grey500, fontWeight: FontWeight.bold)
+					),
+					SizedBox(height: 5),
+					Text(e.description, style: TextStyle(color: PdfColors.grey400)),
+					SizedBox(height: 10),
+				],
+			),).toList(),
+		);
+	}
+
+	static Widget buildListEducation(CvPerson data) {
+		return Column(
+			crossAxisAlignment: CrossAxisAlignment.start,
+			children: data.educations.map((e) => Column(
+				crossAxisAlignment: CrossAxisAlignment.start,
+				children: [
+					Text(
+						e.school.toUpperCase() + " (${e.dateStart[0]} ${e.dateStart[1]} - ${e.dateEnd[0]} ${e.dateEnd[1]})",
+						style: TextStyle(color: PdfColors.grey500, fontWeight: FontWeight.bold)
+					),
+					SizedBox(height: 5),
+					Text(e.description, style: TextStyle(color: PdfColors.grey400)),
+					SizedBox(height: 10),
+				],
+			),).toList(),
+		);
+	}
+
 	
 
 
-	static Container buildImage(Uint8List img,{double height, double width}) {
-	  return Container(
-					height: height,
-					width: width,
-					decoration: BoxDecoration(
-						borderRadius: BorderRadius.circular(10),
-						color: PdfColors.yellow300,
-						shape: BoxShape.circle,
-						image: DecorationImage(
-							image: MemoryImage(img),
-							fit: BoxFit.cover
-						)
-					),
-					
-				);
-	}
+	
 
-	static Widget buildText(String text) => Column(
-		children: [
-			Text(text, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-			// SizedBox(height: 0.8 * PdfPageFormat.cm)
-		]
-	);
+
+	// Future<PageTheme> myPageTheme(PdfPageFormat format) async {
+	// 	format = format.applyMargin(left: 0, top: 0, right: 0, bottom: 0);
+
+	// 	return PageTheme(
+	// 		pageFormat: format,
+	// 	);
+	// }
+
 
 
 

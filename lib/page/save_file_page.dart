@@ -40,7 +40,7 @@ class _SaveFilePageState extends State<SaveFilePage> {
 				title: Text("Cvmaker Gratis"),
 			),
 			body: PdfPreview(
-				// canChangePageFormat: false,
+				canChangePageFormat: false,
 				canChangeOrientation: false,
 				build: (format) => PdfApi.generate(data: widget.data, format: format),
 				actions: [

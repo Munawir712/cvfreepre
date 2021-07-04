@@ -52,9 +52,11 @@ class Experience {
 }
 
 class Education {
-	final String title;
-	final String description;
+	String school;
+	String description;
+	List<String> dateStart;
+	List<String> dateEnd;
 	bool isEdit;
 
-  Education({this.title, this.description, this.isEdit});
+  Education({this.school, this.description, this.dateStart, this.dateEnd, this.isEdit = false});
 }
