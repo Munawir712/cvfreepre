@@ -30,8 +30,9 @@ class PdfApi{
 						mainAxisAlignment: MainAxisAlignment.spaceBetween,
 						children: [
 							Container(
-									width: PageTheme().pageFormat.width / 3.9 -2,
+									width: PageTheme().pageFormat.width / 3.9 -3,
 									height: PageTheme().pageFormat.height,
+									color: PdfColors.grey800
 							),
 							Container(
 									width: PageTheme().pageFormat.width / 1,
@@ -74,74 +75,37 @@ class PdfApi{
 												children: [
 													Text(
 														"ABOUT ME",
-														style: Theme.of(context).header2.copyWith( fontWeight: FontWeight.bold)
+														style: Theme.of(context).header2.copyWith( fontWeight: FontWeight.bold, color: PdfColors.white)
 													),
 													SizedBox(height: 10),
-													isNotNull && data.about != null ? Text(data.about) : Lorem(length: 20, style: TextStyle(color: PdfColors.grey900)),
+													data.about != null ? Text(data.about, style: TextStyle(color: PdfColors.white)) : Lorem(length: 20, style: TextStyle(color: PdfColors.grey900)),
 													// SizedBox(height: 20),
 												]
 											),
 										),
 										// Spacer(),
-										Padding(
-											padding: EdgeInsets.only(left: 12, right: 12, top: 10, bottom: 10),
+										data.skills.isNotEmpty ? Padding(
+											padding: EdgeInsets.only(left: 10, right: 5, top: 10, bottom: 10),
 											child: Column(
 												crossAxisAlignment: CrossAxisAlignment.start,
 												children: [
 													Text(
 														"SKILLS",
-														style: Theme.of(context).header2.copyWith( fontWeight: FontWeight.bold)
+														style: Theme.of(context).header2.copyWith( color: PdfColors.white, fontWeight: FontWeight.bold)
 													),
-													SizedBox(height: 10),
+													// SizedBox(height: 10),
 													// SKILLS
-													Row(
-														mainAxisAlignment: MainAxisAlignment.spaceBetween,
-														crossAxisAlignment: CrossAxisAlignment.center,
-														children: [
-															Column(
-																crossAxisAlignment: CrossAxisAlignment.start,
-																children: [
-																	Text("Flutter:",),
-																	Text("Laravel:",),
-																	Text("PHP:",),
-																	Text("Rest API:",),
-
-																]
-															),
-															Column(
-																crossAxisAlignment: CrossAxisAlignment.start,
-																children: [
-																	Container(
-																		margin: EdgeInsets.only(bottom: 11),
-																		width: 50,
-																		height: 3, 
-																		decoration: BoxDecoration(color: PdfColors.grey700, borderRadius: BorderRadius.circular(2))
-																	),
-																	Container(
-																		margin: EdgeInsets.only(bottom: 11),
-																		width: 30,
-																		height: 3, 
-																		decoration: BoxDecoration(color: PdfColors.grey700, borderRadius: BorderRadius.circular(2))
-																	),
-																	Container(
-																		margin: EdgeInsets.only(bottom: 11),
-																		width: 60,
-																		height: 3, 
-																		decoration: BoxDecoration(color: PdfColors.grey700, borderRadius: BorderRadius.circular(2))
-																	),
-																	Container(
-																		// margin: EdgeInsets.only(bottom: 10),
-																		width: 40,
-																		height: 3, 
-																		decoration: BoxDecoration(color: PdfColors.grey700, borderRadius: BorderRadius.circular(2))
-																	),
-																],
-															),
-														],
+													Column(
+														crossAxisAlignment: CrossAxisAlignment.start,
+														children: data.skills.map((e) => Container(
+															margin: EdgeInsets.only(top: 5),
+															child:buildSkillTile(e)
+														),).toList()
 													),
+													
 												],
 											),
-										),
+										) : SizedBox()
 										
 										
 									]
@@ -170,7 +134,7 @@ class PdfApi{
 																color: PdfColors.yellow500
 															),
 														Text(
-															isNotNull && data.name != null ? data.name : "NAME".toUpperCase(),
+															data.name != null ? data.name : "NAME".toUpperCase(),
 															textAlign: TextAlign.center,
 															style: Theme.of(context).defaultTextStyle.copyWith(fontSize: 30, fontWeight: FontWeight.bold),
 														),
@@ -178,8 +142,8 @@ class PdfApi{
 												),
 												SizedBox(height: 20),
 												Text(data.address ?? "address person", style: TextStyle(color: PdfColors.grey400)),
-												Text("phone: (+62) ${isNotNull && data.phoneNumber != null ? data.phoneNumber : 087766554433}", style: TextStyle(color: PdfColors.grey400)),
-												Text(isNotNull && data.email != null ? data.email : "email: contact@yourdomain.com", style: TextStyle(color: PdfColors.grey400)),
+												Text("phone: (+62) ${data.phoneNumber}", style: TextStyle(color: PdfColors.grey400)),
+												Text(data.email != null ? data.email : "email: contact@yourdomain.com", style: TextStyle(color: PdfColors.grey400)),
 											]
 										),
 									),
@@ -219,8 +183,8 @@ class PdfApi{
 												]
 											),
 										),
-								]
-							),
+									]
+								),
 							),
 						),
 					]
@@ -265,6 +229,47 @@ class PdfApi{
 					SizedBox(height: 10),
 				],
 			),).toList(),
+		);
+	}
+
+	static Widget buildSkillTile(Skill skill) {
+		int level = 1;
+		switch (skill.level) {
+			case "Pemula":
+				level = 1;
+				break;
+			case "Menengah":
+				level = 2;
+				break;
+			case "Terampil":
+				level = 3;
+				break;
+			case "Berpengalaman":
+				level = 4;
+				break;
+			case "Ahli":
+				level = 5;
+				break;
+		}
+		return Row(
+			// mainAxisAlignment: MainAxisAlignment.spaceBetween,
+			crossAxisAlignment: CrossAxisAlignment.center,
+			children: [
+				Expanded(child: Text(skill.skillName, style: TextStyle(color: PdfColors.white)),),
+				SizedBox(width: 5),
+				Row(
+					children: List.generate(5, (index) => Container(
+						margin: EdgeInsets.only(left: 2),
+							width: 10, 
+							height: 10,
+							decoration: BoxDecoration(
+								color: level >= index+1 ? PdfColors.blueGrey700 : PdfColors.blueGrey100,
+								shape: BoxShape.circle,
+							)
+						)
+					),
+				)
+			]
 		);
 	}
 

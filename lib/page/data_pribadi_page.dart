@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pdf_generate_example/model/cv_person.dart';
 import 'package:pdf_generate_example/page/data_pengalaman_page.dart';
+import 'package:pdf_generate_example/shared/theme.dart';
 import 'package:pdf_generate_example/widget/text_filed_widget.dart';
 import 'package:pdf_generate_example/widget/time_line_widget.dart';
-import 'package:timeline_tile/timeline_tile.dart';
 
 class DataPribadiPage extends StatefulWidget {
 
@@ -15,7 +15,7 @@ class DataPribadiPage extends StatefulWidget {
 }
 
 class _DataPribadiPageState extends State<DataPribadiPage> {
-
+	ImagePicker imagePicker = ImagePicker();
 	TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneNumController = TextEditingController();
@@ -25,19 +25,20 @@ class _DataPribadiPageState extends State<DataPribadiPage> {
 
   _pickImageFile() async {
     PickedFile pickedFile =
-        await ImagePicker().getImage(source: ImageSource.gallery);
+        await imagePicker.getImage(source: ImageSource.gallery);
     if (pickedFile != null) {
-      pictureFile = File(pickedFile.path);
-     
-      setState(() {});
+      setState(() {
+      	pictureFile = File(pickedFile.path);
+				print(pictureFile.path);
+			});
     }
   }
 
   _clearImageFile() {
     if (pictureFile != null) {
-      
-      pictureFile = null;
-      setState(() {});
+      setState(() {
+	      pictureFile = null;
+			});
     }
   }
 
@@ -46,9 +47,27 @@ class _DataPribadiPageState extends State<DataPribadiPage> {
 	Widget build(BuildContext context) {
 		return Scaffold(
 			appBar: AppBar(
-				title: Text("Cvmaker Gratis"),
+				title: Text("Cvmaker Gratis", style: textStyle),
 				backgroundColor: Colors.blueAccent,
-				elevation: 1,
+				elevation: 0,
+				actions: [
+					IconButton(
+						color: Colors.white,
+						icon: Icon(Icons.arrow_forward),
+						onPressed: () => Navigator.push(context, MaterialPageRoute(
+							builder: (context) {
+								final data = CvPerson(
+									name: nameController.text,
+									email: emailController.text,
+									about: aboutController.text,
+									address: addressController.text,
+									phoneNumber: phoneNumController.text,
+									imageFile: pictureFile,
+								);
+								return DataPengalamanPage(data: data);
+							})),
+					),
+				],
 			),
 			body: SingleChildScrollView(
 			  child: Column(
@@ -73,50 +92,60 @@ class _DataPribadiPageState extends State<DataPribadiPage> {
 										TextFieldWidget(
 											controller: nameController,
 											label: "Name",
+											hintText: 'name',
 										),
 										TextFieldWidget(
 											controller: aboutController,
 											label: "About",
+											hintText: 'about',
 										),
 										TextFieldWidget(
 											controller: emailController,
 											label: "Email",
+											hintText: 'email@',
 											inputType: TextInputType.emailAddress,
 										),
 										TextFieldWidget(
 											controller: addressController,
 											label: "Address",
+											hintText: 'address',
 											inputType: TextInputType.streetAddress,
 										),
 										TextFieldWidget(
 											controller: phoneNumController,
 											label: "Phone Number",
+											hintText: 'phone number',
 											inputType: TextInputType.phone,
 										),
 									],
 								),
 			  			),
-							ElevatedButton(
-								onPressed: (){
-									final dataPerson = CvPerson(
-										imageFile: pictureFile,
-										name: nameController.text,
-										email: emailController.text,
-										about: aboutController.text,
-										address: addressController.text,
-										phoneNumber: phoneNumController.text,
-									);
-
-									Navigator.push(context, MaterialPageRoute(
-										builder: (context) => DataPengalamanPage(data: dataPerson,)
-										),
-									);
-								}, 
-								style: ElevatedButton.styleFrom(
-									primary: Colors.blueAccent,
-								),
-								child: Text("Next Step >")
-							)
+							SizedBox(
+								height: 50,
+								width: 200,
+							  child: ElevatedButton(
+							  	onPressed: (){
+							  		final dataPerson = CvPerson(
+							  			imageFile: pictureFile,
+							  			name: nameController.text,
+							  			email: emailController.text,
+							  			about: aboutController.text,
+							  			address: addressController.text,
+							  			phoneNumber: phoneNumController.text,
+							  		);
+							  		Navigator.push(context, MaterialPageRoute(
+							  			builder: (context) => DataPengalamanPage(data: dataPerson,)
+							  			),
+							  		);
+							  	}, 
+							  	style: ElevatedButton.styleFrom(
+							  		primary: Colors.blueAccent,
+							  		alignment: Alignment.center
+							  	),
+							  	child: Text("Next Step >")
+							  ),
+							),
+							SizedBox(height: 40)
 			    ],
 			  ),
 			)
@@ -126,19 +155,22 @@ class _DataPribadiPageState extends State<DataPribadiPage> {
     return InkWell(
       onTap: _pickImageFile,
       child: Stack(
+				clipBehavior: Clip.none,
         children: [
           Container(
-						width: 120,
-						height: 120,
+						width: 150,
+						height: 150,
 						alignment: Alignment.center,
 						decoration: BoxDecoration(
 							color: Colors.grey,
-							shape: BoxShape.circle,
+							// shape: BoxShape.circle,
+							borderRadius: BorderRadius.circular(8)
 						),
 						child: pictureFile != null 
 										? Container(
 												decoration: BoxDecoration(
-													shape: BoxShape.circle,
+													// shape: BoxShape.circle,
+													borderRadius: BorderRadius.circular(8),
 													image: DecorationImage(image: FileImage(pictureFile), fit: BoxFit.cover)
 												)
 											) 
@@ -149,9 +181,16 @@ class _DataPribadiPageState extends State<DataPribadiPage> {
 					),
           
 					Positioned(
-						right: 10,
-						bottom: 0,
-						child: buildButtonAddImage(),
+						right: -10,
+						bottom: -5,
+						child: Container(
+							padding: EdgeInsets.all(3),
+							decoration: BoxDecoration(
+								color: Colors.white,
+								shape: BoxShape.circle
+							),
+							child: buildButtonAddImage()
+						),
 					)
         ],
       ),
@@ -171,7 +210,7 @@ class _DataPribadiPageState extends State<DataPribadiPage> {
       },
       child: ClipOval(
         child: Container(
-          color: Colors.blue,
+          color: pictureFile == null ? Colors.blue : Colors.red,
           padding: EdgeInsets.all(8),
           child: Icon(
             pictureFile == null ? Icons.add_a_photo : Icons.cancel,

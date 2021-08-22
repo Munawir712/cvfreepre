@@ -10,24 +10,56 @@ class ListItemWidget extends StatelessWidget {
 
 	@override
 	Widget build(BuildContext context) {
-		return ListTile(
-			horizontalTitleGap: 0.0,
-			title: Text(title),
-			subtitle: Text(subtitle),
-			trailing: Row(
-				mainAxisSize: MainAxisSize.min,
-				mainAxisAlignment: MainAxisAlignment.end,
-				children: [
-					IconButton(
-						icon: Icon(Icons.edit), 
-						onPressed: onEdit ?? (){}
+		// return ListTile(
+		// 	title: Text(title),
+		// 	subtitle: Text(subtitle, style: TextStyle(fontSize: 12),),
+		// 	trailing: Row(
+		// 		mainAxisSize: MainAxisSize.min,
+		// 		mainAxisAlignment: MainAxisAlignment.end,
+		// 		children: [
+		// 			IconButton(
+		// 				icon: Icon(Icons.edit), 
+		// 				onPressed: onEdit ?? (){}
+		// 			),
+		// 			IconButton(
+		// 				icon: Icon(Icons.delete), 
+		// 				onPressed: onDeleted ?? (){}
+		// 			),
+		// 		],
+		// 	),
+		// );
+		return buildTile();
+	}
+
+	Widget buildTile() {
+		return Row(
+			mainAxisAlignment: MainAxisAlignment.spaceBetween,
+			children: [
+				Expanded(
+					child: Column(
+						crossAxisAlignment: CrossAxisAlignment.start,
+						children: [
+							Text(title),
+							SizedBox(height: 6,),
+							Text(subtitle, style: TextStyle(fontSize: 12, color: Colors.grey),)
+						],
 					),
-					IconButton(
-						icon: Icon(Icons.delete), 
-						onPressed: onDeleted ?? (){}
-					),
-				],
-			),
+				),
+				Row(
+					crossAxisAlignment: CrossAxisAlignment.center,
+				  children: [
+				    IconButton(
+				    	icon: Icon(Icons.edit, size: 20, color: Colors.grey.shade500,),
+				    	onPressed: onEdit,
+				    ),
+				    IconButton(
+				    	icon: Icon(Icons.delete, size: 20, color: Colors.grey.shade500,),
+				    	onPressed: onDeleted,
+				    ),
+				  ],
+				),
+				
+			],
 		);
 	}
 }

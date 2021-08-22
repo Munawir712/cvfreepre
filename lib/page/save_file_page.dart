@@ -27,7 +27,7 @@ class _SaveFilePageState extends State<SaveFilePage> {
 
     final appDocDir = await getApplicationDocumentsDirectory();
     final appDocPath = appDocDir.path;
-    final file = File(appDocPath + '/' + 'MY_CV.pdf');
+    final file = File(appDocPath + '/' + 'CVPREE-.pdf');
     print('Save as file ${file.path} ...');
     await file.writeAsBytes(bytes);
     await OpenFile.open(file.path);

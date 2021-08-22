@@ -7,6 +7,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf_generate_example/api/pdf_api.dart';
 import 'package:pdf_generate_example/model/cv_person.dart';
 import 'package:pdf_generate_example/page/save_file_page.dart';
+import 'package:pdf_generate_example/shared/theme.dart';
 import 'package:pdf_generate_example/widget/time_line_widget.dart';
 import 'package:printing/printing.dart';
 
@@ -41,7 +42,10 @@ class _TemplatePageState extends State<TemplatePage> {
 	Widget build(BuildContext context) {
 		return Scaffold(
 			appBar: AppBar(
-				title: Text("Cvmaker Gratis"),
+				title: Text("CvPree", style: textStyle,),
+				elevation: 0,
+				backgroundColor: Colors.blueAccent,
+				centerTitle: true,
 			),
 			body: SingleChildScrollView(
 			  child: Column(
@@ -52,7 +56,7 @@ class _TemplatePageState extends State<TemplatePage> {
 			  			width: double.infinity,
 			  		  child: Column(
 			  		    children: [
-			  					Text("Pengalam", style: TextStyle( color:Colors.white, fontWeight: FontWeight.bold, fontSize: 24),),
+			  					Text("Template", style: TextStyle( color:Colors.white, fontWeight: FontWeight.bold, fontSize: 24),),
 			  					SizedBox(height: 10,),
 			  		      TimeLineWidget(status: "TP"),
 			  		    ],
